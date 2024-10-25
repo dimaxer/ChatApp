@@ -1,0 +1,58 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install Backend dependencies
+      run: |
+        cd BackEnd
+        npm ci
+
+    - name: Build Backend
+      run: |
+        cd BackEnd
+        npm run build --if-present
+
+    # Placeholder for future test step
+    # - name: Run Backend tests
+    #   run: |
+    #     cd BackEnd
+    #     npm test
+
+    # Placeholder for Flutter build (if needed)
+    # - name: Set up Flutter
+    #   uses: subosito/flutter-action@v2
+    #   with:
+    #     flutter-version: '2.x'
+    
+    # - name: Install Frontend dependencies
+    #   run: |
+    #     cd FrontEnd/flutter_application_1
+    #     flutter pub get
+    
+    # - name: Build Frontend
+    #   run: |
+    #     cd FrontEnd/flutter_application_1
+    #     flutter build web
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ./BackEnd

@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node src/server.js"
   }
 }
