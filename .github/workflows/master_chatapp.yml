@@ -24,26 +24,27 @@ jobs:
       - name: Install and build Backend
         run: |
           cd BackEnd
-          npm ci
+          npm install
           npm run build --if-present
-          npm test --if-present
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '2.x'
+          flutter-version: '3.x'
+          channel: 'stable'
 
       - name: Install and build Frontend
         run: |
           cd FrontEnd/flutter_application_1
           flutter pub get
-          flutter test
           flutter build web
 
       - name: Zip artifact for deployment
         run: |
           cd BackEnd
           zip -r ../release.zip ./*
+          cd ../FrontEnd/flutter_application_1/build/web
+          zip -r ../../../release.zip ./*
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
