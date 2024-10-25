@@ -1,12 +1,19 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth'); // Make sure this path is correct
 const cors = require('cors');
 
-// Load environment variables from .env file
-require('dotenv').config();
+// Debug logging
+console.log('Current working directory:', process.cwd());
+console.log('Attempting to load .env file...');
+console.log('Environment variables loaded:', {
+    mongoDbExists: !!process.env.MONGODB_URI,
+    portExists: !!process.env.PORT,
+    mongoDbUri: process.env.MONGODB_URI?.substring(0, 20) + '...',
+    envPath: path.resolve(process.cwd(), '.env')
+});
 
 const app = express();
 
@@ -49,10 +56,9 @@ app.use((req, res) => {
   res.status(404).send('Route not found');
 });
 
-// Add mongoose connection with error handling
+console.log('MongoDB URI:', process.env.MONGODB_URI ? 'exists' : 'undefined');
+
 mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
 })
