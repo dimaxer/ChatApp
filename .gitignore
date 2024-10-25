@@ -1,80 +1,37 @@
 # Dependencies
-node_modules/
+**/node_modules/
 
 # Environment files
-.env
-.env.local
-.env.development
-.env.production
+**/.env
+**/.env.local
+**/.env.development
+**/.env.production
 
 # IDE files
 .vscode/
 .idea/
 
 # Build outputs
-/dist
-/build
+**/dist/
+**/build/
 
 # Logs
-*.log
-npm-debug.log*
+**/*.log
+**/npm-debug.log*
 
 # Flutter/Dart specific
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/build/
 
 # System Files
 .DS_Store
 Thumbs.db
 
-gradle-wrapper.jar
-/.gradle
-/captures/
-/gradlew
-/gradlew.bat
-/local.properties
-GeneratedPluginRegistrant.java
-
-# Remember to never publicly share your keystore.
-# See https://flutter.dev/to/reference-keystore
-key.properties
-**/*.keystore
-**/*.jks
-
-**/dgph
-*.mode1v3
-*.mode2v3
-*.moved-aside
-*.pbxuser
-*.perspectivev3
-**/*sync/
-.sconsign.dblite
-.tags*
-**/.vagrant/
-**/DerivedData/
-Icon?
-**/Pods/
-**/.symlinks/
-profile
-xcuserdata
-**/.generated/
-Flutter/App.framework
-Flutter/Flutter.framework
-Flutter/Flutter.podspec
-Flutter/Generated.xcconfig
-Flutter/ephemeral/
-Flutter/app.flx
-Flutter/app.zip
-Flutter/flutter_assets/
-Flutter/flutter_export_environment.sh
-ServiceDefinitions.json
-Runner/GeneratedPluginRegistrant.*
-
-# Exceptions to above rules.
-!default.mode1v3
-!default.mode2v3
-!default.pbxuser
-!default.perspectivev3
+# Flutter specific
+**/ios/Flutter/.last_build_id
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
