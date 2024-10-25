@@ -15,6 +15,11 @@ console.log('Environment variables loaded:', {
     envPath: path.resolve(process.cwd(), '.env')
 });
 
+// Add after your existing environment variable logging
+if (!process.env.JWT_SECRET) {
+    console.error('JWT_SECRET is not configured. Authentication will fail.');
+    process.exit(1);
+}
 
 const app = express();
 

@@ -32,6 +32,11 @@ exports.login = async (req, res) => {
         const { email, password } = req.body;
         console.log('Login attempt:', email);
 
+        if (!process.env.JWT_SECRET) {
+            console.error('JWT_SECRET is not configured');
+            return res.status(500).json({ message: 'Server configuration error' });
+        }
+
         const user = await User.findOne({ email });
 
         if (!user) {
