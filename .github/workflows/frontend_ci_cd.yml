@@ -1,0 +1,33 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '2.x'
+    - run: cd FrontEnd/flutter_application_1 && flutter pub get
+    - run: cd FrontEnd/flutter_application_1 && flutter test
+    - run: cd FrontEnd/flutter_application_1 && flutter build apk
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '2.x'
+    - run: cd FrontEnd/flutter_application_1 && flutter build apk
+    - uses: actions/upload-artifact@v2
+      with:
+        name: release-apk
+        path: FrontEnd/flutter_application_1/build/app/outputs/flutter-apk/app-release.apk
