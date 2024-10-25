@@ -29,8 +29,7 @@ app.use((req, res, next) => {
 // Root route
 app.get('/', (req, res) => {
   console.log('Root route hit');
-  res.json({ message: "Server is running" });
-  res.send('ChatApp Backend is running!');
+  res.json({ message: "ChatApp Backend is running!" });
 });
 
 // Auth routes
@@ -63,12 +62,11 @@ mongoose.connect(process.env.MONGODB_URI, {
   process.exit(1);
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 /**
  * Start the server
  */
-app.listen(PORT, '0.0.0.0', () => 
-{
+app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

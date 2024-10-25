@@ -45,6 +45,14 @@ jobs:
       #     flutter pub get
       #     flutter build web --release
 
+      - name: Create .env file
+        run: |
+          cd BackEnd
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+          echo "PORT=8080" >> .env
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+
       - name: Zip artifact for deployment
         run: |
           cd BackEnd
@@ -56,13 +64,6 @@ jobs:
           name: node-app
           path: release.zip
 
-      # Add this to your build job
-      - name: Create .env file
-        run: |
-          cd BackEnd
-          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
-        env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -85,6 +86,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'ChatApp'
-          slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A617006440CE40A6AA75D15FE225EB94 }}
           package: .
