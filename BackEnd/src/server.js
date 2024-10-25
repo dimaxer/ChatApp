@@ -15,6 +15,7 @@ console.log('Environment variables loaded:', {
     envPath: path.resolve(process.cwd(), '.env')
 });
 
+
 const app = express();
 
 // Middleware to parse JSON bodies
