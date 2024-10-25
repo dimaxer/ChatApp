@@ -5,9 +5,17 @@ import 'dart:async';
 import 'dart:io';
 
 class AuthService {
-  final String baseUrl = 'http://10.0.2.2:3000';
-  // If you're using an iOS simulator, use 'http://localhost:3000' instead
+  // Production URL (Azure)
+  static const String prodUrl = 'https://chatapp-hkake2e6ekegg0h2.israelcentral-01.azurewebsites.net';
+  // Development URL (Local)
+  static const String devUrl = 'http://localhost:3000';
+  
+  // Add a flag to switch between environments
+  static bool useProductionServer = true;
+  
   final storage = const FlutterSecureStorage();
+
+  String get baseUrl => useProductionServer ? prodUrl : devUrl;
 
   Future<String> login(String email, String password) async {
     try {
