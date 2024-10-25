@@ -30,6 +30,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   console.log('Root route hit');
   res.json({ message: "Server is running" });
+  res.send('ChatApp Backend is running!');
 });
 
 // Auth routes
