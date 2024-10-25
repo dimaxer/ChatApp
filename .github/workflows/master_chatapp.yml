@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy to Azure Web App - ChatApp
+name: Build and deploy Backend to Azure Web App - ChatApp
 
 on:
   push:
@@ -16,6 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Echo PORT variable
+        run: |
+          echo "PORT: $PORT"
+        env:
+          PORT: ${{ secrets.PORT }}
+
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
@@ -24,27 +30,25 @@ jobs:
       - name: Install and build Backend
         run: |
           cd BackEnd
-          npm install
+          npm ci
           npm run build --if-present
+      
+      # - name: Set up Flutter
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: '3.x'
+      #     channel: 'stable'
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.x'
-          channel: 'stable'
-
-      - name: Install and build Frontend
-        run: |
-          cd FrontEnd/flutter_application_1
-          flutter pub get
-          flutter build web
+      # - name: Install and build Frontend
+      #   run: |
+      #     cd FrontEnd/flutter_application_1
+      #     flutter pub get
+      #     flutter build web --release
 
       - name: Zip artifact for deployment
         run: |
           cd BackEnd
           zip -r ../release.zip ./*
-          cd ../FrontEnd/flutter_application_1/build/web
-          zip -r ../../../release.zip ./*
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
