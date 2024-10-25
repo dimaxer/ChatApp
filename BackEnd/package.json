@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "jest"
+    "test": "jest",
+    "azure-start": "NODE_ENV=production node src/server.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

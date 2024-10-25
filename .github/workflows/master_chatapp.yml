@@ -50,8 +50,10 @@ jobs:
           cd BackEnd
           echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
           echo "PORT=8080" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Zip artifact for deployment
         run: |
