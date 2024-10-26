@@ -20,7 +20,9 @@ jobs:
     - name: Install Backend Dependencies
       run: |
         cd BackEnd
+        # First install existing dependencies exactly as in package-lock.json
         npm ci
+        # Then add test dependencies
         npm install --save-dev supertest jest @babel/core @babel/preset-env
 
     - name: Create test environment file
@@ -34,12 +36,6 @@ jobs:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-    - name: Build Backend
-      run: |
-        cd BackEnd
-        npm run build --if-present
-
-    # Run tests on the built artifact
     - name: Run Backend Tests
       run: |
         cd BackEnd
