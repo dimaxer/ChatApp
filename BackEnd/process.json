@@ -1,9 +1,0 @@
-{
-  "name": "chatapp",
-  "script": "src/server.js",
-  "instances": 1,
-  "env": {
-    "NODE_ENV": "production",
-    "PORT": 8080
-  }
-}
