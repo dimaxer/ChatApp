@@ -1,58 +1,85 @@
+/**
+ * Authentication Middleware
+ * Provides middleware functions for authentication and authorization
+ * @module AuthMiddleware
+ */
+
 const jwt = require('jsonwebtoken');
-const User = require('../models/userModel');
+const User = require('../models/user');
 const HttpStatusCode = require('../constants/httpStatusCodes');
 
 /**
  * Middleware to protect routes that require authentication
+ * Verifies JWT token and attaches user to request object
+ * 
+ * @async
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
+ * @returns {Promise<void>}
  */
-exports.protect = async (req, res, next) => 
-{
-    try 
-    {
+exports.protect = async (req, res, next) => {
+    try {
         let token;
-        // Check if token is provided in the Authorization header
-        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) 
-        {
-            // Extract the token from the Authorization header
+        
+        // Extract token from Authorization header
+        if (req.headers.authorization?.startsWith('Bearer')) {
             token = req.headers.authorization.split(' ')[1];
         }
 
-        if (!token) 
-        {
-            // If no token is provided, return an error
+        if (!token) {
             return res.status(HttpStatusCode.UNAUTHORIZED).json({
                 status: 'fail',
-                message: 'You are not logged in. Please log in to get access.',
+                message: 'You are not logged in. Please log in to get access.'
             });
         }
 
-        // Verify the token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        try {
+            // Verify token
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Check if the user still exists
-        const user = await User.findById(decoded.id);
+            // Check if user still exists
+            const user = await User.findById(decoded.userId);
+            if (!user) {
+                return res.status(HttpStatusCode.UNAUTHORIZED).json({
+                    status: 'fail',
+                    message: 'The user belonging to this token no longer exists.'
+                });
+            }
 
-        if (!user) 
-        {
+            // Attach user to request object
+            req.user = user;
+            next();
+            
+        } catch (error) {
             return res.status(HttpStatusCode.UNAUTHORIZED).json({
                 status: 'fail',
-                message: 'The user belonging to this token no longer exists.',
+                message: 'Invalid token. Please log in again.'
             });
         }
-
-        // Attach the user to the request object
-        req.user = user;
-        next();
-    } 
-    catch (error) 
-    {
-        // Handle invalid tokens
-        res.status(HttpStatusCode.UNAUTHORIZED).json({
-            status: 'fail',
-            message: 'Invalid token. Please log in again.',
+    } catch (error) {
+        console.error('Auth middleware error:', error);
+        return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+            status: 'error',
+            message: 'An error occurred while authenticating.'
         });
     }
+};
+
+/**
+ * Middleware to restrict access to specific user roles
+ * 
+ * @param {...String} roles - Allowed roles for the route
+ * @returns {Function} Express middleware function
+ */
+exports.restrictTo = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return res.status(HttpStatusCode.FORBIDDEN).json({
+                status: 'fail',
+                message: 'You do not have permission to perform this action'
+            });
+        }
+        next();
+    };
 };

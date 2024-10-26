@@ -1,8 +1,15 @@
+/**
+ * Authentication Tests
+ * Tests for authentication-related functionality
+ * @module AuthTests
+ */
+
 const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../server'); // Adjust the path as needed
 const User = require('../models/user');
 const http = require('http');
+const HttpStatusCode = require('../constants/httpStatusCodes');
 
 let server;
 
@@ -26,11 +33,10 @@ describe('Basic Server Tests', () => {
         const res = await request(app)
             .get('/')
             .send();
-        expect(res.statusCode).toBe(200);
+        expect(res.statusCode).toBe(HttpStatusCode.OK);
         expect(res.body).toHaveProperty('message', 'ChatApp Backend is running!');
     });
 });
-
 
 describe('Auth Endpoints', () => {
     it('should register a new user', async () => {
@@ -41,21 +47,48 @@ describe('Auth Endpoints', () => {
                 email: 'test@example.com',
                 password: 'password123'
             });
-        expect(res.statusCode).toBe(201);
+        expect(res.statusCode).toBe(HttpStatusCode.CREATED);
         expect(res.body).toHaveProperty('message', 'User created successfully');
-
-
-
     });
 
-    it('should login a user', async ()=> {
-        const res = await request(app)     
+    it('should login a user', async () => {
+        // First register a user
+        await request(app)
+            .post('/auth/register')
+            .send({
+                username: 'testuser',
+                email: 'test@example.com',
+                password: 'password123'
+            });
+
+        // Then try to login
+        const res = await request(app)
             .post('/auth/login')
             .send({
-                    email: 'test@example.com',
-                    password: 'password123'
+                email: 'test@example.com',
+                password: 'password123'
             });
-            expect(res.statusCode).toBe(200);
-            expect(res.body).toHaveProperty('token');
-    })
+        expect(res.statusCode).toBe(HttpStatusCode.OK);
+        expect(res.body).toHaveProperty('token');
+    });
+
+    it('should not login with incorrect password', async () => {
+        // First register a user
+        await request(app)
+            .post('/auth/register')
+            .send({
+                username: 'testuser',
+                email: 'test@example.com',
+                password: 'password123'
+            });
+
+        // Then try to login with wrong password
+        const res = await request(app)
+            .post('/auth/login')
+            .send({
+                email: 'test@example.com',
+                password: 'wrongpassword'
+            });
+        expect(res.statusCode).toBe(HttpStatusCode.UNAUTHORIZED);
+    });
 });
