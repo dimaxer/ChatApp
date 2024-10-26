@@ -31,7 +31,6 @@ describe('Basic Server Tests', () => {
     });
 });
 
-
 describe('Auth Endpoints', () => {
     it('should register a new user', async () => {
         const res = await request(app)
