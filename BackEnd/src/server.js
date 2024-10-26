@@ -65,22 +65,20 @@ app.use((req, res) => {
 
 console.log('MongoDB URI:', process.env.MONGODB_URI ? 'exists' : 'undefined');
 
-mongoose.connect(process.env.MONGODB_URI, {
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => {
-  console.error('MongoDB connection error:', err);
-  process.exit(1);
-});
+// Only connect to MongoDB and start server if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+    mongoose.connect(process.env.MONGODB_URI)
+        .then(() => {
+            const PORT = process.env.PORT || 8080;
+            app.listen(PORT, () => {
+                console.log(`Server is running on port ${PORT}`);
+                console.log('Environment:', process.env.NODE_ENV || 'development');
+            });
+        })
+        .catch(err => {
+            console.error('MongoDB connection error:', err);
+            process.exit(1);
+        });
+}
 
-const PORT = process.env.PORT || 8080;
-
-/**
- * Start the server
- */
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-    console.log('Environment:', process.env.NODE_ENV || 'development');
-});
+module.exports = app;

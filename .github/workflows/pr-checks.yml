@@ -9,6 +9,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
     steps:
     - uses: actions/checkout@v4
     
@@ -20,21 +26,15 @@ jobs:
     - name: Install Backend Dependencies
       run: |
         cd BackEnd
-        # First install existing dependencies exactly as in package-lock.json
         npm ci
-        # Then add test dependencies
-        npm install --save-dev supertest jest @babel/core @babel/preset-env
 
     - name: Create test environment file
       run: |
         cd BackEnd
-        echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+        echo "MONGODB_URI=mongodb://localhost:27017/chatapp_test" >> .env
         echo "PORT=8080" >> .env
-        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+        echo "JWT_SECRET=test_secret_key" >> .env
         echo "NODE_ENV=test" >> .env
-      env:
-        MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     - name: Run Backend Tests
       run: |
