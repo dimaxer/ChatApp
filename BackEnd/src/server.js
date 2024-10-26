@@ -62,6 +62,7 @@ app.use((req, res) => {
   res.status(404).send('Route not found');
 });
 
+
 console.log('MongoDB URI:', process.env.MONGODB_URI ? 'exists' : 'undefined');
 
 mongoose.connect(process.env.MONGODB_URI, {
