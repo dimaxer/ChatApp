@@ -1,0 +1,39 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+
+    - name: Install Backend Dependencies
+      run: |
+        cd BackEnd
+        npm ci
+    
+    - name: Create test environment file
+      run: |
+        cd BackEnd
+        echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+        echo "PORT=8080" >> .env
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+        echo "NODE_ENV=test" >> .env
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+    - name: Run Backend Tests
+      run: |
+        cd BackEnd
+        npm test
