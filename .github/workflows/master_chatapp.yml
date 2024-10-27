@@ -77,6 +77,20 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      - name: Azure App Service Settings
+        uses: Azure/appservice-settings@v1
+        with:
+          app-name: 'ChatApp'
+          app-settings-json: |
+            [
+              {
+                "name": "NODE_ENV",
+                "value": "production",
+                "slotSetting": false
+              }
+            ]
+          mask-inputs: false
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
