@@ -37,6 +37,7 @@ function validateEnvironment(): Environment {
         throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
     }
 
+    
     return process.env as unknown as Environment;
 }
 
