@@ -43,6 +43,11 @@ jobs:
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          NODE_ENV: production
+
+      - name: Set environment variables
+        run: |
+          echo "NODE_ENV=production" >> $GITHUB_ENV
 
       - name: Zip artifact for deployment
         run: |
