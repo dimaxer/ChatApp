@@ -81,14 +81,7 @@ jobs:
         uses: Azure/appservice-settings@v1
         with:
           app-name: 'ChatApp'
-          app-settings-json: |
-            [
-              {
-                "name": "NODE_ENV",
-                "value": "production",
-                "slotSetting": false
-              }
-            ]
+          app-settings-json: '[{"name": "NODE_ENV", "value": "production", "slotSetting": false}]'
           mask-inputs: false
 
       - name: 'Deploy to Azure Web App'
