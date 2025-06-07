@@ -17,6 +17,28 @@ import { Environment } from './types';
 dotenv.config();
 
 /**
+ * Creates a typed environment object from process.env
+ * @param env - NodeJS process environment
+ * @returns {Environment} Typed environment object
+ * @throws {Error} If NODE_ENV is invalid
+ */
+function createTypedEnv(env: NodeJS.ProcessEnv): Environment {
+    const nodeEnv = env.NODE_ENV;
+    
+    // Validate NODE_ENV value
+    if (nodeEnv !== 'development' && nodeEnv !== 'production' && nodeEnv !== 'test') {
+        throw new Error(`Invalid NODE_ENV: ${nodeEnv}`);
+    }
+
+    return {
+        MONGODB_URI: env.MONGODB_URI,
+        PORT: env.PORT,
+        JWT_SECRET: env.JWT_SECRET,
+        NODE_ENV: nodeEnv
+    } as Environment;
+}
+
+/**
  * Validates required environment variables are set
  * @throws {Error} If any required environment variable is missing
  * @returns {Environment} Validated environment variables
@@ -37,8 +59,18 @@ function validateEnvironment(): Environment {
         throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
     }
 
-    
-    return process.env as unknown as Environment;
+    return createTypedEnv(process.env);
+}
+
+/**
+ * Configures request logging middleware
+ * @param app - Express application instance
+ */
+function setupLogging(app: Express): void {
+    app.use((req: Request, _res: Response, next) => {
+        console.log(`${new Date().toISOString()} - ${req.method} request to ${req.url}`);
+        next();
+    });
 }
 
 /**
@@ -52,18 +84,9 @@ function setupMiddleware(app: Express): void {
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization']
     }));
+    setupLogging(app);
 }
 
-/**
- * Configures request logging middleware
- * @param app - Express application instance
- */
-function setupLogging(app: Express): void {
-    app.use((req: Request, _res: Response, next) => {
-        console.log(`${new Date().toISOString()} - ${req.method} request to ${req.url}`);
-        next();
-    });
-}
 
 /**
  * Configures API routes for the application
@@ -105,7 +128,6 @@ function initializeServer(): Express {
     const app = express();
     
     setupMiddleware(app);
-    setupLogging(app);
     setupRoutes(app);
 
     if (env.NODE_ENV !== 'test') {

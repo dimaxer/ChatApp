@@ -66,8 +66,5 @@ const userSchema = new Schema<User>({
     }
 });
 
-// Indexes for performance
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
 
 export const UserModel = model<User>('User', userSchema);

@@ -79,13 +79,13 @@ async function loginTestUser(): Promise<TestResponse> {
         .post('/auth/login')
         .send({
             email: testUser.email,
-            password: testUser.password
-        });
-}
+            password: testUser.password     
+        })
+}   
 
 beforeAll(setupTestServer);
 afterEach(cleanupDatabase);
-afterAll(cleanupServer);
+afterAll(cleanupServer);    
 
 /**
  * Authentication Tests
@@ -97,8 +97,8 @@ describe('Basic Server Tests', () => {
     it('should respond to root endpoint', async () => {
         const response = await request(app)
             .get('/')
-            .send();
-        
+            .send();    
+            
         expect(response.statusCode).toBe(HttpStatusCode.OK);
         expect(response.body).toHaveProperty('message', 'ChatApp Backend is running!');
     });

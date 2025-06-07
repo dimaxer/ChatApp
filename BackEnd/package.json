@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "cross-env NODE_ENV=development PORT=8080 ts-node-dev --respawn --ignore-watch node_modules --no-notify src/server.ts",
+    "dev": "cross-env NODE_ENV=development PORT=8080 nodemon ts-node src/server.ts",
     "build": "tsc",
     "test": "jest",
     "azure-start": "cross-env NODE_ENV=production node dist/server.js"
